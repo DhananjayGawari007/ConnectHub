@@ -83,12 +83,34 @@ if (fs.existsSync(frontendDist)) {
   });
 }
 
+// Database diagnostics route
+app.get('/api/db-status', async (req, res) => {
+  try {
+    const [tables] = await pool.query('SHOW TABLES');
+    res.json({
+      status: 'connected',
+      tables: tables.map(t => Object.values(t)[0]),
+      host: pool.pool?.config?.connectionConfig?.host,
+      database: pool.pool?.config?.connectionConfig?.database
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: 'error',
+      message: err.message,
+      code: err.code,
+      host: pool.pool?.config?.connectionConfig?.host,
+      database: pool.pool?.config?.connectionConfig?.database
+    });
+  }
+});
+
 // Global Error Handler
 app.use((err, req, res, next) => {
-  console.error('[ConnectHub Server Error]:', err.stack);
-  res.status(500).json({
-    message: 'Internal Server Error',
-    error: process.env.NODE_ENV === 'development' ? err.message : undefined
+  console.error('[ConnectHub Server Error]:', err.stack || err);
+  res.status(err.status || 500).json({
+    message: err.message || 'Internal Server Error',
+    error: err.message,
+    code: err.code
   });
 });
 
@@ -175,12 +197,19 @@ async function ensureDemoUsers() {
 }
 
 async function startServer() {
-  const dbOk = await testConnection();
-  if (!dbOk) {
-    console.warn('⚠️ Warning: Database connection failed. Retrying in background...');
-  } else {
+  let dbOk = false;
+  for (let attempt = 1; attempt <= 10; attempt++) {
+    console.log(`[*] Connecting to MySQL (attempt ${attempt}/10)...`);
+    dbOk = await testConnection();
+    if (dbOk) break;
+    await new Promise(r => setTimeout(r, 2000));
+  }
+
+  if (dbOk) {
     await ensureSchema();
     await ensureDemoUsers();
+  } else {
+    console.warn('⚠️ Warning: Database connection failed after 10 attempts.');
   }
 
   server.listen(PORT, () => {

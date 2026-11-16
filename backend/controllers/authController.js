@@ -60,7 +60,7 @@ const register = async (req, res) => {
     });
   } catch (err) {
     console.error('Register error:', err);
-    res.status(500).json({ message: 'Internal server error', error: err.message });
+    res.status(500).json({ message: err.message || 'Registration failed', error: err.message, code: err.code });
   }
 };
 
@@ -114,7 +114,7 @@ const login = async (req, res) => {
     });
   } catch (err) {
     console.error('Login error:', err);
-    res.status(500).json({ message: 'Internal server error', error: err.message });
+    res.status(500).json({ message: err.message || 'Login failed', error: err.message, code: err.code });
   }
 };
 
