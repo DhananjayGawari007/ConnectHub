@@ -1,0 +1,38 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Frontend Build
+frontend/dist/
+frontend/dist-ssr/
+*.local
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# C++ Build outputs
+cpp-data-structures/build/
+*.exe
+*.obj
+*.pdb
+*.ilk
+*.lib
+*.exp
+
+# Database data & logs
+database/data/
+*.err
+*.pid
+*.log
+
+# Operating System & IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

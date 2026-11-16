@@ -1,0 +1,193 @@
+/* ConnectHub Global Discord-Dark Theme */
+:root {
+  --bg-primary: #1e1f22;       /* Charcoal background */
+  --bg-secondary: #2b2d31;     /* Channels sidebar */
+  --bg-tertiary: #111214;      /* Server list left rail */
+  --bg-chat: #313338;          /* Main chat area */
+  --bg-hover: #35373c;         /* Hover state */
+  --bg-active: #404249;        /* Active item */
+  
+  --brand-purple: #5865f2;     /* ConnectHub blurple */
+  --brand-purple-hover: #4752c4;
+  --brand-cyan: #00b0f4;
+  --accent-green: #23a55a;     /* Online badge */
+  --accent-yellow: #f0b232;    /* Idle badge */
+  --accent-red: #f23f43;       /* DND / Delete */
+  --accent-gray: #80848e;      /* Offline badge */
+
+  --text-normal: #dbdee1;
+  --text-muted: #949ba4;
+  --text-header: #f2f3f5;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-tertiary);
+  color: var(--text-normal);
+  user-select: none;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #1a1b1e;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #111214;
+}
+
+/* Tooltip & Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInLeft {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-in {
+  animation: slideInLeft 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Glassmorphism */
+.glass {
+  background: rgba(43, 45, 49, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.glass-card {
+  background: rgba(30, 31, 34, 0.85);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+}
+
+/* Buttons */
+.btn-primary {
+  background-color: var(--brand-purple);
+  color: #ffffff;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.btn-primary:hover {
+  background-color: var(--brand-purple-hover);
+  transform: translateY(-1px);
+}
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  background-color: #4e5058;
+  color: #ffffff;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.btn-secondary:hover {
+  background-color: #6d6f78;
+}
+
+.btn-danger {
+  background-color: var(--accent-red);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-danger:hover {
+  opacity: 0.9;
+}
+
+/* Input styles */
+.input-field {
+  background-color: #1e1f22;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 10px 14px;
+  color: var(--text-header);
+  font-size: 14px;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.input-field:focus {
+  border-color: var(--brand-purple);
+  box-shadow: 0 0 0 2px rgba(88, 101, 242, 0.25);
+}
+
+/* Status indicator badge */
+.status-badge {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--bg-tertiary);
+  display: inline-block;
+}
+.status-online { background-color: var(--accent-green); }
+.status-idle { background-color: var(--accent-yellow); }
+.status-dnd { background-color: var(--accent-red); }
+.status-offline { background-color: var(--accent-gray); }
+
+/* Responsive Media Queries */
+@media (max-width: 768px) {
+  .hide-on-mobile {
+    display: none !important;
+  }
+  .mobile-drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 50;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.7);
+  }
+}

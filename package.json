@@ -1,0 +1,32 @@
+{
+  "name": "connecthub",
+  "version": "1.0.0",
+  "description": "ConnectHub – Discord-inspired platform powered by native C++ Data Structures and MySQL 8",
+  "main": "desktop/main.js",
+  "scripts": {
+    "setup": "scripts\\setup.bat",
+    "start": "scripts\\start.bat",
+    "share": "scripts\\share-live.bat",
+    "build": "npm --prefix frontend run build",
+    "desktop": "electron desktop/main.js",
+    "start:desktop": "scripts\\start-desktop.bat",
+    "stop": "scripts\\stop.bat",
+    "build:cpp": "scripts\\build-cpp.bat",
+    "test": "scripts\\test.bat"
+  },
+  "keywords": [
+    "discord-clone",
+    "desktop-app",
+    "electron",
+    "c++",
+    "data-structures",
+    "react",
+    "socket.io",
+    "mysql"
+  ],
+  "author": "ConnectHub Team",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^33.2.1"
+  }
+}
