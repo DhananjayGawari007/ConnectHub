@@ -94,6 +94,31 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 
+async function ensureSchema() {
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    const schemaPath = path.resolve(__dirname, '../database/schema.sql');
+    if (fs.existsSync(schemaPath)) {
+      const sql = fs.readFileSync(schemaPath, 'utf8');
+      const statements = sql
+        .split(';')
+        .map(s => s.trim())
+        .filter(s => s.length > 0 && !s.startsWith('--') && !s.toUpperCase().startsWith('CREATE DATABASE') && !s.toUpperCase().startsWith('USE'));
+      for (const statement of statements) {
+        try {
+          await pool.query(statement);
+        } catch (stmtErr) {
+          // Table may already exist
+        }
+      }
+      console.log('✅ Database schema verified');
+    }
+  } catch (err) {
+    console.warn('Database schema auto-check warning:', err.message);
+  }
+}
+
 async function ensureDemoUsers() {
   try {
     const bcrypt = require('bcrypt');
@@ -125,6 +150,7 @@ async function startServer() {
   if (!dbOk) {
     console.warn('⚠️ Warning: Database connection failed. Retrying in background...');
   } else {
+    await ensureSchema();
     await ensureDemoUsers();
   }
 
