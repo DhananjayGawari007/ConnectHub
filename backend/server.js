@@ -98,13 +98,16 @@ async function ensureSchema() {
   try {
     const fs = require('fs');
     const path = require('path');
+
+    // 1. Create all tables if not exist
     const schemaPath = path.resolve(__dirname, '../database/schema.sql');
     if (fs.existsSync(schemaPath)) {
       const sql = fs.readFileSync(schemaPath, 'utf8');
-      const statements = sql
+      const cleanSql = sql.replace(/--.*$/gm, '').replace(/\/\*[\s\S]*?\*\//g, '');
+      const statements = cleanSql
         .split(';')
         .map(s => s.trim())
-        .filter(s => s.length > 0 && !s.startsWith('--') && !s.toUpperCase().startsWith('CREATE DATABASE') && !s.toUpperCase().startsWith('USE'));
+        .filter(s => s.length > 0 && !s.toUpperCase().startsWith('CREATE DATABASE') && !s.toUpperCase().startsWith('USE'));
       for (const statement of statements) {
         try {
           await pool.query(statement);
@@ -112,7 +115,33 @@ async function ensureSchema() {
           // Table may already exist
         }
       }
-      console.log('✅ Database schema verified');
+      console.log(`✅ Database schema verified (${statements.length} statements)`);
+    }
+
+    // 2. Seed default servers and channels if database is fresh
+    try {
+      const [serverRows] = await pool.query('SELECT COUNT(*) as count FROM servers');
+      if (serverRows[0]?.count === 0) {
+        const samplePath = path.resolve(__dirname, '../database/sample_data.sql');
+        if (fs.existsSync(samplePath)) {
+          const sampleSql = fs.readFileSync(samplePath, 'utf8');
+          const cleanSample = sampleSql.replace(/--.*$/gm, '').replace(/\/\*[\s\S]*?\*\//g, '');
+          const sampleStatements = cleanSample
+            .split(';')
+            .map(s => s.trim())
+            .filter(s => s.length > 0 && !s.toUpperCase().startsWith('CREATE DATABASE') && !s.toUpperCase().startsWith('USE'));
+          for (const stmt of sampleStatements) {
+            try {
+              await pool.query(stmt);
+            } catch (e) {
+              // Ignore conflicts during initial seed
+            }
+          }
+          console.log('✅ Default servers & channels seeded successfully');
+        }
+      }
+    } catch (e) {
+      // Ignore initial count check error if table being prepared
     }
   } catch (err) {
     console.warn('Database schema auto-check warning:', err.message);
